@@ -1,0 +1,14 @@
+﻿<Window x:Class="TaskListCommander.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TaskListCommander"
+        xmlns:v="clr-namespace:TaskListCommander.View"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        Title="MainWindow" Height="395" Width="600">
+    <Grid>
+        <v:TasksCommanderView DataContext="{Binding Source={StaticResource Locator}, Path=TasksCommanderViewModel}"/>
+    </Grid>
+</Window>
