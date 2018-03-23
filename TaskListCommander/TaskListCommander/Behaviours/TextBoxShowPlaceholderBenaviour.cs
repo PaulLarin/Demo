@@ -11,24 +11,22 @@ namespace TaskListCommander.Behaviours
 {
     public static class TextBoxShowPlaceholderBenaviour
     {
-        public static string GetWatermarkText(DependencyObject obj)
+        public static string GetPlaceholder(DependencyObject obj)
         {
-            return (string)obj.GetValue(WatermarkText);
+            return (string)obj.GetValue(Placeholder);
         }
 
-        public static void SetWatermarkText(DependencyObject obj, string value)
+        public static void SetPlaceholder(DependencyObject obj, string value)
         {
-            obj.SetValue(WatermarkText, value);
+            obj.SetValue(Placeholder, value);
         }
-
       
-      
-        public static readonly DependencyProperty WatermarkText =
-            DependencyProperty.RegisterAttached("WatermarkText",
+        public static readonly DependencyProperty Placeholder =
+            DependencyProperty.RegisterAttached("Placeholder",
             typeof(string), typeof(TextBoxShowPlaceholderBenaviour),
-            new UIPropertyMetadata(string.Empty, OnWatermarkTextChanged));
+            new UIPropertyMetadata(string.Empty, OnPlaceholderChanged));
 
-        private static void OnWatermarkTextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private static void OnPlaceholderChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             TextBox tb = sender as TextBox;
             if (tb != null)
@@ -37,7 +35,7 @@ namespace TaskListCommander.Behaviours
                 tb.GotFocus += OnInputTextBoxGotFocus;
                 tb.LostFocus += OnInputTextBoxLostFocus;
                 if (string.IsNullOrEmpty(tb.Text))
-                    tb.Text = GetWatermarkText(tb);
+                    tb.Text = GetPlaceholder(tb);
             }
         }
 
@@ -49,7 +47,9 @@ namespace TaskListCommander.Behaviours
             if (tb != null)
             {
                 if (string.IsNullOrEmpty(tb.Text))
-                    tb.Text = GetWatermarkText(tb);
+                {
+                    tb.Text = GetPlaceholder(tb);
+                }
             }
         }
 
@@ -58,7 +58,7 @@ namespace TaskListCommander.Behaviours
             var tb = e.OriginalSource as TextBox;
             if (tb != null)
             {
-                if (tb.Text == GetWatermarkText(tb))
+                if (tb.Text == GetPlaceholder(tb))
                     tb.Text = string.Empty;
             }
         }
