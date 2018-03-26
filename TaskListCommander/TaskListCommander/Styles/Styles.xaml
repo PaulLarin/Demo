@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:behaviours="clr-namespace:TaskListCommander.Behaviours"
+                    xmlns:behaviours="clr-namespace:TaskListCommander.AttachedProperties"
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d">
     <SolidColorBrush x:Key="ActiveElementBackround" Color="#FF66C628" />
@@ -12,14 +12,17 @@
                 <ControlTemplate>
                     <Border Background="White" CornerRadius="3">
                         <Grid>
-                            <TextBox
-                                behaviours:TextBoxShowPlaceholderBenaviour.Placeholder="{Binding (behaviours:TextBoxShowPlaceholderBenaviour.Placeholder),
+                            <!--<TextBox
+                                behaviours:TextBoxExtended.Placeholder="{Binding (behaviours:TextBoxExtended.Placeholder),
                                 RelativeSource={RelativeSource TemplatedParent}, UpdateSourceTrigger=PropertyChanged}"
                                 HorizontalAlignment="Stretch" VerticalContentAlignment="Center"
                                 HorizontalContentAlignment="Center" Margin="2" BorderThickness="0"
                                 Foreground="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}"
                                 Text="{Binding Text, RelativeSource={RelativeSource TemplatedParent},                              
-                                UpdateSourceTrigger=PropertyChanged}" />
+                                UpdateSourceTrigger=PropertyChanged}">
+                            </TextBox>-->
+                            <ContentPresenter Content="{Binding Text, RelativeSource={RelativeSource TemplatedParent},                              
+                                UpdateSourceTrigger=PropertyChanged}" Cursor="Hand" KeyboardNavigation.AcceptsReturn="True"/>
                         </Grid>
                     </Border>
                     <!--<ControlTemplate.Triggers>

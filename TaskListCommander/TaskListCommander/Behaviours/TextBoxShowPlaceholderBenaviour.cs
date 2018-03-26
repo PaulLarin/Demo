@@ -5,62 +5,129 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Markup;
 using System.Windows.Media;
 
-namespace TaskListCommander.Behaviours
-{
-    public static class TextBoxShowPlaceholderBenaviour
+namespace TaskListCommander.AttachedProperties
+{   
+    public static class AdditionalContent
     {
-        public static string GetPlaceholder(DependencyObject obj)
-        {
-            return (string)obj.GetValue(Placeholder);
-        }
+        public static readonly DependencyProperty RightContentProperty =
+    DependencyProperty.RegisterAttached("RightContent", typeof(UIElement), typeof(AdditionalContent),
+        new UIPropertyMetadata(null, SetContent));
 
-        public static void SetPlaceholder(DependencyObject obj, string value)
+        private static void SetContent(object sender, DependencyPropertyChangedEventArgs e)
         {
-            obj.SetValue(Placeholder, value);
-        }
-      
-        public static readonly DependencyProperty Placeholder =
-            DependencyProperty.RegisterAttached("Placeholder",
-            typeof(string), typeof(TextBoxShowPlaceholderBenaviour),
-            new UIPropertyMetadata(string.Empty, OnPlaceholderChanged));
-
-        private static void OnPlaceholderChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            TextBox tb = sender as TextBox;
+            var tb = sender as TextBox;
             if (tb != null)
             {
-                tb.Text = (string)e.NewValue;
-                tb.GotFocus += OnInputTextBoxGotFocus;
-                tb.LostFocus += OnInputTextBoxLostFocus;
-                if (string.IsNullOrEmpty(tb.Text))
-                    tb.Text = GetPlaceholder(tb);
-            }
-        }
+                var p = (tb.Parent as System.Windows.Controls.Panel).Children;
+                var ind = (tb.Parent as System.Windows.Controls.Panel).Children.IndexOf(tb);
+                var grid = new Grid();
+                (tb.Parent as System.Windows.Controls.Panel).Children.Remove(tb);
 
-      
-
-        private static void OnInputTextBoxLostFocus(object sender, RoutedEventArgs e)
-        {
-            var tb = e.OriginalSource as TextBox;
-            if (tb != null)
-            {
-                if (string.IsNullOrEmpty(tb.Text))
+                grid.Children.Add(tb);
+                grid.Children.Add(new Button()
                 {
-                    tb.Text = GetPlaceholder(tb);
-                }
+                    Content = "B",
+                    Width = 30,
+                    Margin = new Thickness(4),
+                    HorizontalAlignment = HorizontalAlignment.Right
+                });
+                p.Insert(ind, grid);
+                //if (string.IsNullOrEmpty(tb.Text))
+                //{
+                //    tb.Text = GetPlaceholder(tb);
+                //}
             }
         }
 
-        private static void OnInputTextBoxGotFocus(object sender, RoutedEventArgs e)
+        public static void SetRightContent(UIElement element, UIElement value)
         {
-            var tb = e.OriginalSource as TextBox;
-            if (tb != null)
+            if (element == null)
+                throw new ArgumentNullException("element");
+
+            element.SetValue(RightContentProperty, value);
+        }
+
+        public static UIElement GetRightContent(UIElement element)
+        {
+            if (element == null)
+                throw new ArgumentNullException("element");
+
+            return ((UIElement)element.GetValue(RightContentProperty));
+        }
+    }
+
+
+    public static class TextBoxExtended
+    {
+        public static readonly DependencyProperty PlaceholderProperty =
+    DependencyProperty.RegisterAttached("Placeholder", typeof(string), typeof(TextBoxExtended),
+        new UIPropertyMetadata(null, SetContent));
+
+        private static void SetContent(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            if (textBox != null)
             {
-                if (tb.Text == GetPlaceholder(tb))
-                    tb.Text = string.Empty;
+                var parent = (textBox.Parent as Panel);
+                var indexOfSender = parent.Children.IndexOf(textBox);
+                parent.Children.Remove(textBox);
+
+                var grid = new Grid()
+                {
+
+                };
+
+                grid.Children.Add(textBox);
+                var placeHolder = CreatePlaceHolderUiElement(textBox, e.NewValue.ToString());
+                grid.Children.Add(placeHolder);
+                parent.Children.Insert(indexOfSender, grid);
+
+                placeHolder.MouseDown += delegate
+                {
+                    textBox.Focus();
+                };
+                textBox.GotFocus += delegate
+                {
+                    placeHolder.Visibility = Visibility.Collapsed;
+                };
+                textBox.LostFocus += delegate
+                {
+                    if (string.IsNullOrEmpty(textBox.Text))
+                        placeHolder.Visibility = Visibility.Visible;
+                };
             }
+        }
+
+        private static UIElement CreatePlaceHolderUiElement(TextBox textBox, string placeHolderText)
+        {
+            return new TextBlock()
+            {
+                Text = placeHolderText,
+                Foreground = new SolidColorBrush(Colors.LightGray),
+                HorizontalAlignment = textBox.HorizontalContentAlignment,
+                VerticalAlignment = textBox.VerticalContentAlignment,
+                TextAlignment = textBox.TextAlignment,
+                Visibility = string.IsNullOrEmpty(textBox.Text) ? Visibility.Visible : Visibility.Collapsed
+            };
+        }
+
+        public static void SetPlaceholder(UIElement element, UIElement value)
+        {
+            if (element == null)
+                throw new ArgumentNullException("element");
+
+            element.SetValue(PlaceholderProperty, value);
+        }
+
+        public static UIElement GetPlaceholder(UIElement element)
+        {
+            if (element == null)
+                throw new ArgumentNullException("element");
+
+            return ((UIElement)element.GetValue(PlaceholderProperty));
         }
     }
 }

@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TaskListCommander.View"
-             xmlns:behaviours="clr-namespace:TaskListCommander.Behaviours"
+             xmlns:extensions="clr-namespace:TaskListCommander.AttachedProperties"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              xmlns:converters="clr-namespace:TaskListCommander.Converters"
@@ -146,11 +146,20 @@
             </StackPanel.Resources>
             <DockPanel>
                 <Label DockPanel.Dock="Top">Название:</Label>
-                <TextBox Text="{Binding NewTaskName, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" behaviours:TextBoxShowPlaceholderBenaviour.Placeholder="Placeholder" Style="{StaticResource InputBoxStyle}"/>
+                <TextBox extensions:TextBoxExtended.Placeholder="Placeholder" 
+                         Text="{Binding NewTaskName, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" 
+                          Style="{StaticResource InputBoxStyle}">
+                    <extensions:AdditionalContent.RightContent>
+                        <Button Content="123"/>
+                    </extensions:AdditionalContent.RightContent>
+                </TextBox>
             </DockPanel>
             <DockPanel>
                 <Label DockPanel.Dock="Top">Длительность:</Label>
-                <TextBox behaviours:TextBoxShowPlaceholderBenaviour.Placeholder="Placeholder"  Text="{Binding NewTaskDuration, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputBoxStyle}" >
+                <TextBox   
+                         Text="{Binding NewTaskDuration, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" 
+                         Style="{StaticResource InputBoxStyle}" >
+                    
                 </TextBox>
             </DockPanel>
             <Button Margin="0 10 0 0" Command="{Binding AddNewTaskCommand, UpdateSourceTrigger=PropertyChanged}" 
