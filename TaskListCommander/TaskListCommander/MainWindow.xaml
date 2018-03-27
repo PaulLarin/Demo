@@ -7,7 +7,7 @@
         xmlns:v="clr-namespace:TaskListCommander.View"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Title="MainWindow" Height="395" Width="600">
+        Title="MainWindow" Height="600" Width="815">
     <Grid>
         <v:TasksCommanderView DataContext="{Binding Source={StaticResource Locator}, Path=TasksCommanderViewModel}"/>
     </Grid>
