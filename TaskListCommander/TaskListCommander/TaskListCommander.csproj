@@ -69,7 +69,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Behaviours\TextBoxShowPlaceholderBenaviour.cs" />
+    <Compile Include="AttachedProperties\TextBoxExtended.cs" />
+    <Compile Include="AttachedProperties\TextBoxShowPlaceholderBenaviour.cs" />
     <Compile Include="Converters\TaskItemToStateDescriptionConverter.cs" />
     <Compile Include="Converters\TaskNameAndStateToDescriptionConverter.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
@@ -123,6 +124,8 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="Resources\avantgarde.ttf" />
+    <Resource Include="Resources\futura-normal.ttf" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
