@@ -69,15 +69,5 @@ namespace TaskListCommander.Properties {
                 return ((byte[])(obj));
             }
         }
-        
-        /// <summary>
-        ///   Поиск локализованного ресурса типа System.Byte[].
-        /// </summary>
-        internal static byte[] futura_normal {
-            get {
-                object obj = ResourceManager.GetObject("futura_normal", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
     }
 }

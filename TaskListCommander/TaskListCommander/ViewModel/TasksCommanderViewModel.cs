@@ -11,7 +11,7 @@ using System.Reflection;
 using System.Windows.Input;
 
 namespace TaskListCommander.ViewModel
-{   
+{
     public class TasksCommanderViewModel : ViewModelBase, IDataErrorInfo
     {
         private string _newTaskDuration;
@@ -25,8 +25,8 @@ namespace TaskListCommander.ViewModel
             get => _newTaskName;
             set
             {
-                _newTaskName = value;
-                RaisePropertyChanged(() => IsTaskAddingEnabled);
+                if (Set(() => NewTaskName, ref _newTaskName, value))
+                    RaisePropertyChanged(() => IsTaskAddingEnabled);
             }
         }
 
@@ -35,10 +35,12 @@ namespace TaskListCommander.ViewModel
             get => _newTaskDuration;
             set
             {
-                _newTaskDuration = value;
-                RaisePropertyChanged(() => IsTaskAddingEnabled);
+                if (Set(() => NewTaskDuration, ref _newTaskDuration, value))
+                    RaisePropertyChanged(() => IsTaskAddingEnabled);
             }
         }
+
+        Random _random = new Random();
 
         public ICommand AddNewTaskCommand => new RelayCommand(() =>
         {
@@ -49,49 +51,69 @@ namespace TaskListCommander.ViewModel
         {
             Tasks.Remove(x);
         });
-                
-        public string this[string propertyName] => TasksCommanderViewModelValidation.ValidateProperty(this, propertyName);
+
+        public ICommand GenerateRandomTaskNameCommand => new RelayCommand(() =>
+        {
+            NewTaskName = _random.Next(100).ToString();
+        });
+
+        public ICommand GenerateRandomTaskDurationCommand => new RelayCommand(() =>
+        {
+            NewTaskDuration = _random.Next(100).ToString();
+        });
+
+        public string this[string propertyName]
+        {
+            get
+            {
+                switch (propertyName)
+                {
+                    case nameof(NewTaskName):
+                        return ValidateNewTaskName();
+
+                    case nameof(NewTaskDuration):
+                        return ValidateNewTaskDuration();
+                }
+
+                return null;
+            }
+        }
 
         public bool IsTaskAddingEnabled =>
             !string.IsNullOrWhiteSpace(NewTaskName) &&
             !string.IsNullOrWhiteSpace(NewTaskDuration) &&
-            string.IsNullOrEmpty(TasksCommanderViewModelValidation.ValidateProperty(this, nameof(NewTaskName))) &&
-            string.IsNullOrEmpty(TasksCommanderViewModelValidation.ValidateProperty(this, nameof(NewTaskDuration)));
+            string.IsNullOrEmpty(ValidateNewTaskDuration()) &&
+            string.IsNullOrEmpty(ValidateNewTaskName());
 
-        public string Error
+        public string Error => null;
+
+        string ValidateNewTaskName()
         {
-            get { return ""; }
-        }
+            string error = null;
 
-        static class TasksCommanderViewModelValidation
-        {
-            public static string ValidateProperty(TasksCommanderViewModel viewModel, string propertyName)
-            {
-                string error = string.Empty;
-                switch (propertyName)
-                {
-                    case nameof(viewModel.NewTaskName):
-                        if (string.IsNullOrEmpty(viewModel.NewTaskName))
-                            break;
-
-                        if (viewModel.NewTaskName.Length == 1 && char.IsWhiteSpace(viewModel.NewTaskName, 0))
-                            error = "Название задачи должно быть не пустым";
-                        break;
-
-                    case nameof(viewModel.NewTaskDuration):
-
-                        if (string.IsNullOrEmpty(viewModel.NewTaskDuration))
-                            break;
-
-                        if (!int.TryParse(viewModel.NewTaskDuration, out var duration))
-                            error = "Длительность задачи должна быть указана целым числом";
-                        else if (duration <= 0)
-                            error = "Длительность задачи должна быть указана положительным целым числом";
-                        break;
-                }
+            if (string.IsNullOrEmpty(NewTaskName))
                 return error;
-            }
+
+            if (NewTaskName.Length == 1 && char.IsWhiteSpace(NewTaskName, 0))
+                error = "Название задачи должно быть не пустым";
+
+            return error;
         }
 
+        string ValidateNewTaskDuration()
+        {
+            string error = null;
+
+
+            if (string.IsNullOrEmpty(NewTaskDuration))
+                return error;
+
+            if (!int.TryParse(NewTaskDuration, out var duration))
+                error = "Длительность задачи должна быть указана целым числом";
+            else if (duration <= 0)
+                error = "Длительность задачи должна быть указана положительным целым числом";
+
+            return error;
+        }
     }
 }

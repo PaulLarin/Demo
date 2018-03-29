@@ -59,7 +59,6 @@ D:\Repos\Demo\TaskListCommander\TaskListCommander\obj\Debug\TaskListCommander.cs
 D:\Repos\Demo\TaskListCommander\TaskListCommander\obj\Debug\TaskListCommander.csproj.CoreCompileInputs.cache
 D:\Repos\Demo\TaskListCommander\TaskListCommander\obj\Debug\TaskListCommander.exe
 D:\Repos\Demo\TaskListCommander\TaskListCommander\obj\Debug\TaskListCommander.pdb
-D:\Repos\Demo\TaskListCommander\TaskListCommander\obj\Debug\TaskListCommander.csprojResolveAssemblyReference.cache
 D:\Demo\TaskListCommander\TaskListCommander\bin\Debug\TaskListCommander.exe.config
 D:\Demo\TaskListCommander\TaskListCommander\bin\Debug\TaskListCommander.exe
 D:\Demo\TaskListCommander\TaskListCommander\bin\Debug\TaskListCommander.pdb
@@ -90,3 +89,4 @@ D:\Demo\TaskListCommander\TaskListCommander\obj\Debug\TaskListCommander.csproj.G
 D:\Demo\TaskListCommander\TaskListCommander\obj\Debug\TaskListCommander.csproj.CoreCompileInputs.cache
 D:\Demo\TaskListCommander\TaskListCommander\obj\Debug\TaskListCommander.exe
 D:\Demo\TaskListCommander\TaskListCommander\obj\Debug\TaskListCommander.pdb
+D:\Repos\Demo\TaskListCommander\TaskListCommander\obj\Debug\TaskListCommander.csprojResolveAssemblyReference.cache

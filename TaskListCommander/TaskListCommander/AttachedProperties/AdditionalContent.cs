@@ -1,40 +1,34 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Markup;
+using System.Windows.Documents;
+using TaskListCommander.Adorners;
 
 namespace TaskListCommander.AttachedProperties
-{   
+{
     public static class AdditionalContent
     {
         public static readonly DependencyProperty RightContentProperty =
     DependencyProperty.RegisterAttached("RightContent", typeof(FrameworkElement), typeof(AdditionalContent),
-        new UIPropertyMetadata(null, SetContent));
+        new PropertyMetadata(null, SetContent));
 
         private static void SetContent(object sender, DependencyPropertyChangedEventArgs e)
         {
             var element = sender as FrameworkElement;
             if (element != null)
             {
-                var parent = element.Parent as Panel;
-                var indexOfSender = parent.Children.IndexOf(element);
-                parent.Children.Remove(element);
+                element.Loaded += delegate
+                {
+                    var content = e.NewValue as FrameworkElement;
 
-                var grid = new Grid();
+                    content.HorizontalAlignment = HorizontalAlignment.Right;
+                    content.Margin = new Thickness(4);
 
-                grid.Children.Add(element);
-                var content = e.NewValue as FrameworkElement;
-                content.HorizontalAlignment = HorizontalAlignment.Right;
-                content.Margin = new Thickness(4);
-                grid.Children.Add(content);
-                parent.Children.Insert(indexOfSender, grid);
+                    var adorner = new AdornerContentPresenter(element, content);
+                    AdornerLayer.GetAdornerLayer(element).Add(adorner);
+                };
             }
         }
-
+        
         public static void SetRightContent(UIElement element, FrameworkElement value)
         {
             if (element == null)

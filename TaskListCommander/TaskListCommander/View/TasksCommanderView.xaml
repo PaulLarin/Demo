@@ -20,6 +20,7 @@
 
         <Style x:Key="ListViewTaskItemStyle" TargetType="{x:Type ListBoxItem}">
             <Setter Property="Margin" Value="1"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ListBoxItem}">
@@ -30,10 +31,10 @@
                             </Grid.RowDefinitions><Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="220*"/>
-                                    <ColumnDefinition Width="70"/>
-                                    <ColumnDefinition Width="38"/>
+                                    <ColumnDefinition Width="90"/>
+                                    <ColumnDefinition Width="55"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock VerticalAlignment="Center"  FontSize="16" Margin="8 0 8 0" FontFamily="Verdana" Foreground="{DynamicResource TaskDescriptionForeground}" >
+                                <TextBlock VerticalAlignment="Center" FontSize="17" Margin="14 0 0 0" FontFamily="Verdana" FontWeight="Medium" Foreground="{DynamicResource TaskDescriptionForeground}" >
                                     <TextBlock.Text>
                                         <MultiBinding Converter="{StaticResource TaskNameAndStateToDescriptionConverter}" Mode="TwoWay">
                                             <Binding Path="Name" UpdateSourceTrigger="PropertyChanged"/>
@@ -41,16 +42,16 @@
                                         </MultiBinding>
                                     </TextBlock.Text>
                                 </TextBlock>
-                                <TextBlock Grid.Column="1" HorizontalAlignment="Left"  VerticalAlignment="Center" FontSize="16" FontFamily="Verdana" Foreground="{DynamicResource InfoBrush}">
+                                <TextBlock Grid.Column="1" HorizontalAlignment="Left"  VerticalAlignment="Center" FontSize="17" FontFamily="Verdana" Foreground="{DynamicResource InfoBrush}">
                                     <Run Text="{Binding Progress, UpdateSourceTrigger=PropertyChanged}"/>
-                                    <Run Text=" "/><Run Text="%"/>
+                                    <Run Text="%"/>
                                 </TextBlock>
                                 <Button Grid.Column="2" Visibility="{Binding CanBeRemoved, Converter={StaticResource BooleanToVisibilityConverter}}"
                                         Command="{Binding TasksCommanderViewModel.RemoveTaskCommand, Mode=OneWay, Source={StaticResource Locator}}" 
                                         CommandParameter="{Binding}"
                                         Style="{DynamicResource RemoveButtonStyle}"/>
                             </Grid>
-                            <ProgressBar Grid.Row="1" Height="5" Margin="8 0 8 0" Foreground="{StaticResource ActiveElementBackround}" VerticalAlignment="Top" BorderThickness="0" Value="{Binding Progress, UpdateSourceTrigger=PropertyChanged}"/>
+                            <ProgressBar Grid.Row="1" Height="5" Margin="14 0 14 0" Foreground="{StaticResource ActiveElementBackround}" VerticalAlignment="Top" BorderThickness="0" Value="{Binding Progress, UpdateSourceTrigger=PropertyChanged}"/>
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>
@@ -91,17 +92,21 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
-                        <Grid x:Name="container">
+                        <Grid x:Name="container" Background="Transparent" Cursor="Hand">
                             <Ellipse x:Name="ellipse" Width="28" Height="28" Stroke="{StaticResource InfoBrush}"  StrokeThickness="1"/>
                             <Line x:Name="lineA"  Width="14" Height="14" X1="0" X2="15" Y1="0" Y2="14" Stroke="{StaticResource InfoBrush}" StrokeThickness="1"/>
                             <Line x:Name="lineB"  Width="14" Height="14" X1="15" X2="0" Y1="0" Y2="14" Stroke="{StaticResource InfoBrush}" StrokeThickness="1"/>
                         </Grid>
                         <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="true">
+                            <Trigger SourceName="container" Property="IsMouseOver" Value="true">
                                 <Setter Property="Opacity" TargetName="container" Value="0.8"/>
                                 <Setter Property="Stroke" TargetName="ellipse" Value="{StaticResource Button.MouseOver.Border}"/>
                                 <Setter Property="Stroke" TargetName="lineA" Value="{StaticResource Button.MouseOver.Border}"/>
                                 <Setter Property="Stroke" TargetName="lineB" Value="{StaticResource Button.MouseOver.Border}"/>
+                                
+                                <!--<Setter Property="StrokeThickness" TargetName="ellipse" Value="2"/>
+                                <Setter Property="StrokeThickness" TargetName="lineA" Value="2"/>
+                                <Setter Property="StrokeThickness" TargetName="lineB" Value="2"/>-->
                             </Trigger>
                             <Trigger Property="IsPressed" Value="true">
                                 <Setter Property="Opacity" TargetName="container" Value="0.7"/>
@@ -122,46 +127,59 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="400*"/>
-            <ColumnDefinition Width="270"/>
+            <ColumnDefinition Width="265"/>
         </Grid.ColumnDefinitions>
         <Rectangle  Grid.Column="1" Grid.RowSpan="2" Fill="#494949"></Rectangle>
         <Label Margin="10 0 0 0" VerticalAlignment="Center" Style="{StaticResource GroupLabelStyle}">СПИСОК ЗАДАЧ:</Label>
         <Label Margin="20 0 0 0" VerticalAlignment="Center" Style="{StaticResource GroupLabelStyle}" Grid.Column="1" Foreground="#FFEDEDED" FontStretch="ExtraExpanded">СОЗДАНИЕ ЗАДАЧИ:</Label>
         <Rectangle Height="2" VerticalAlignment="Bottom" Grid.ColumnSpan="2" Fill="#338D8D8D"/>
-        <ScrollViewer Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch" Template="{DynamicResource ScrollViewerControlTemplate1}">
-            <ListBox Margin="7" BorderThickness="0" ItemsSource="{Binding Source={StaticResource TasksItemsSource}}" 
+        <ScrollViewer Grid.Column="0" Grid.Row="1" 
+                      BorderThickness="0"
+                      VerticalScrollBarVisibility="Visible" 
+                      HorizontalAlignment="Stretch" 
+                      HorizontalContentAlignment="Stretch"
+                      Template="{DynamicResource ScrollViewerControlTemplate}">
+            <ListBox Margin="10" BorderThickness="0" 
+                     HorizontalAlignment="Stretch" 
+                     ItemsSource="{Binding Source={StaticResource TasksItemsSource}}" 
                      Background="Transparent"
                      ItemContainerStyle="{DynamicResource ListViewTaskItemStyle}">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel></StackPanel>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
             </ListBox>
         </ScrollViewer>
-        <StackPanel Grid.Column="1" Grid.Row="1" Margin="20 0 20 0">
+        <StackPanel Grid.Column="1" Grid.Row="1" Margin="26 0 26 0">
             <StackPanel.Resources>
                 <Style TargetType="Label" BasedOn="{StaticResource ParameterLabelStyle}">
-                    <Setter   Property="Foreground" Value="#A2A2A2"/>
+                    <Setter   Property="Foreground" Value="#FFA3A3A3"/>
+                    <Setter Property="Margin" Value="0 8 0 2"/>
                 </Style>
-                <!--<Style TargetType="TextBox" BasedOn="{StaticResource InputBoxStyle}">
-                </Style>-->
+                <Style TargetType="TextBox" BasedOn="{StaticResource InputBoxStyle}">
+                    <Setter Property="Margin" Value="0 3 0 8"/>
+                </Style>
             </StackPanel.Resources>
             <DockPanel>
                 <Label DockPanel.Dock="Top">Название:</Label>
-                <TextBox  
-                         Text="{Binding NewTaskName, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" 
-                          Style="{StaticResource InputBoxStyle}">
+                <TextBox extensions:TextBoxExtended.Placeholder="назв. задачи" Text="{Binding NewTaskName, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" FontSize="13">
                     <extensions:AdditionalContent.RightContent>
-                        <Button Content="123"/>
+                        <Button Content="R" Width="50" Command="{Binding GenerateRandomTaskNameCommand}"/>
                     </extensions:AdditionalContent.RightContent>
                 </TextBox>
             </DockPanel>
             <DockPanel>
                 <Label DockPanel.Dock="Top">Длительность:</Label>
-                <TextBox   
-                         Text="{Binding NewTaskDuration, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" 
-                         Style="{StaticResource InputBoxStyle}" >
-                    
+                <TextBox extensions:TextBoxExtended.Placeholder="время, с" Text="{Binding NewTaskDuration, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" FontSize="13">
+                    <extensions:AdditionalContent.RightContent>
+                        <Button Content="R" Width="50" Command="{Binding GenerateRandomTaskDurationCommand}"/>
+                    </extensions:AdditionalContent.RightContent>
                 </TextBox>
             </DockPanel>
-            <Button Margin="0 10 0 0" Command="{Binding AddNewTaskCommand, UpdateSourceTrigger=PropertyChanged}" 
-                    IsEnabled="{Binding IsTaskAddingEnabled, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" IsDefault="True" Style="{DynamicResource ButtonStyle}">ДОБАВИТЬ</Button>
+            <Button Margin="0 7 0 0" Command="{Binding AddNewTaskCommand, UpdateSourceTrigger=PropertyChanged}" 
+                    IsEnabled="{Binding IsTaskAddingEnabled, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" 
+                    IsDefault="True" Style="{DynamicResource ButtonStyle}">ДОБАВИТЬ</Button>
         </StackPanel>
     </Grid>
 </UserControl>

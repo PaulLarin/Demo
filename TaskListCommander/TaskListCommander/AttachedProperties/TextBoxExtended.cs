@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Media;
+using TaskListCommander.Adorners;
 
 namespace TaskListCommander.AttachedProperties
 {
@@ -15,39 +17,48 @@ namespace TaskListCommander.AttachedProperties
             var textBox = sender as TextBox;
             if (textBox != null)
             {
-                var parent = (textBox.Parent as Panel);
-                var indexOfSender = parent.Children.IndexOf(textBox);
-                parent.Children.Remove(textBox);
-
-                var grid = new Grid();
-
-                grid.Children.Add(textBox);
-                var placeHolder = CreatePlaceHolderUiElement(textBox, e.NewValue.ToString());
-                grid.Children.Add(placeHolder);
-                parent.Children.Insert(indexOfSender, grid);
-
-                placeHolder.MouseDown += delegate
+                textBox.Loaded += delegate
                 {
-                    textBox.Focus();
-                };
-                textBox.GotFocus += delegate
-                {
-                    placeHolder.Visibility = Visibility.Collapsed;
-                };
-                textBox.LostFocus += delegate
-                {
-                    if (string.IsNullOrEmpty(textBox.Text))
-                        placeHolder.Visibility = Visibility.Visible;
+                    var placeHolder = CreatePlaceHolderUIElement(textBox, e.NewValue.ToString());
+
+                    placeHolder.MouseDown += delegate
+                    {
+                        textBox.Focus();
+                    };
+
+                    textBox.TextChanged += delegate
+                    {
+                        if (string.IsNullOrEmpty(textBox.Text))
+                            placeHolder.Visibility = Visibility.Visible;
+                        else
+                            placeHolder.Visibility = Visibility.Collapsed;
+                    };
+
+                    textBox.GotFocus += delegate
+                    {
+                        placeHolder.Visibility = Visibility.Collapsed;
+                    };
+
+                    textBox.LostFocus += delegate
+                    {
+                        if (string.IsNullOrEmpty(textBox.Text))
+                            placeHolder.Visibility = Visibility.Visible;
+                    };
+
+                    var adorner = new AdornerContentPresenter(textBox, placeHolder);
+                    AdornerLayer.GetAdornerLayer(textBox).Add(adorner);
                 };
             }
         }
 
-        private static UIElement CreatePlaceHolderUiElement(TextBox textBox, string placeHolderText)
+        private static FrameworkElement CreatePlaceHolderUIElement(TextBox textBox, string placeHolderText)
         {
             return new TextBlock()
             {
                 Text = placeHolderText,
-                Foreground = new SolidColorBrush(Colors.LightGray),
+                Foreground = new SolidColorBrush(Colors.Gray),
+                FontFamily = textBox.FontFamily,
+                FontSize = textBox.FontSize,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
                 TextAlignment = textBox.TextAlignment,
@@ -55,7 +66,7 @@ namespace TaskListCommander.AttachedProperties
             };
         }
 
-        public static void SetPlaceholder(UIElement element, UIElement value)
+        public static void SetPlaceholder(UIElement element, string value)
         {
             if (element == null)
                 throw new ArgumentNullException("element");
@@ -63,12 +74,12 @@ namespace TaskListCommander.AttachedProperties
             element.SetValue(PlaceholderProperty, value);
         }
 
-        public static UIElement GetPlaceholder(UIElement element)
+        public static string GetPlaceholder(UIElement element)
         {
             if (element == null)
                 throw new ArgumentNullException("element");
 
-            return ((UIElement)element.GetValue(PlaceholderProperty));
+            return ((string)element.GetValue(PlaceholderProperty));
         }
     }
 }

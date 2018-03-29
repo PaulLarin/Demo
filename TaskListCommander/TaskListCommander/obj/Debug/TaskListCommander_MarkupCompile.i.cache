@@ -4,16 +4,16 @@
 winexe
 C#
 .cs
-D:\Demo\TaskListCommander\TaskListCommander\obj\Debug\
+D:\Repos\Demo\TaskListCommander\TaskListCommander\obj\Debug\
 TaskListCommander
 none
 false
 DEBUG;TRACE
-D:\Demo\TaskListCommander\TaskListCommander\App.xaml
+D:\Repos\Demo\TaskListCommander\TaskListCommander\App.xaml
 3-1901757525
 
-18-794462869
-711509727812
+191405158324
+712093394639
 MainWindow.xaml;Styles\Styles.xaml;View\TasksCommanderView.xaml;
 
 False

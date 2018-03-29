@@ -69,8 +69,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Adorners\AdornerContentPresenter.cs" />
+    <Compile Include="AttachedProperties\AdditionalContent.cs" />
     <Compile Include="AttachedProperties\TextBoxExtended.cs" />
-    <Compile Include="AttachedProperties\TextBoxShowPlaceholderBenaviour.cs" />
     <Compile Include="Converters\TaskItemToStateDescriptionConverter.cs" />
     <Compile Include="Converters\TaskNameAndStateToDescriptionConverter.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
@@ -118,6 +119,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -125,7 +127,6 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <None Include="Resources\avantgarde.ttf" />
-    <Resource Include="Resources\futura-normal.ttf" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
