@@ -1,4 +1,5 @@
-﻿using GalaSoft.MvvmLight;
+﻿using System;
+using GalaSoft.MvvmLight;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,27 +21,20 @@ namespace TaskListCommander.ViewModel
         public TaskItemViewModel(string name, int duration)
         {
             Name = name;
-            _durationMilliseconds = duration*1000;
+            _durationMilliseconds = duration * 1000;
             Start();
         }
 
         void Start()
         {
+            var progressReporter = new Progress(amount => Progress = amount);
+
+            State = State.Runnning;
+            Progress = 0;
+
             Task.Run(() =>
             {
-                State = State.Runnning;
-                Progress = 0;
-
-                var stepsCount = 100;
-                var timeStep = _durationMilliseconds / stepsCount;
-                var step = 100f / stepsCount;
-                var progress = 0f;
-                while(progress < 100)
-                {
-                    Thread.Sleep(timeStep);
-                    progress += step;
-                    Progress = (int)progress;
-                }
+                WorkImitaion.Run(_durationMilliseconds, progressReporter);
 
                 CanBeRemoved = true;
                 State = State.Completed;
@@ -65,6 +59,38 @@ namespace TaskListCommander.ViewModel
         {
             get => _canBeRemoved;
             set => Set(nameof(CanBeRemoved), ref _canBeRemoved, value);
-        }        
+        }
+    }
+
+    public class Progress : IProgress<int>
+    {
+        private readonly Action<int> _callback;
+
+        public Progress(Action<int> callback)
+        {
+            _callback = callback;
+        }
+
+        public void Report(int value)
+        {
+            _callback.Invoke(value);
+        }
+    }
+
+    static class WorkImitaion
+    {
+        public static void Run(int durationMilliseconds, IProgress<int> progressReporter)
+        {
+            var stepsCount = 100;
+            var timeStep = durationMilliseconds / stepsCount;
+            var step = 100f / stepsCount;
+            var progress = 0f;
+            while (progress < 100)
+            {
+                Thread.Sleep(timeStep);
+                progress += step;
+                progressReporter.Report((int)progress);
+            }
+        }
     }
 }

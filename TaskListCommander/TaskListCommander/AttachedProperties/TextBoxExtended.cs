@@ -19,7 +19,7 @@ namespace TaskListCommander.AttachedProperties
             {
                 textBox.Loaded += delegate
                 {
-                    var placeHolder = CreatePlaceHolderUIElement(textBox, e.NewValue.ToString());
+                    var placeHolder = CreatePlaceHolderUiElement(textBox, e.NewValue.ToString());
 
                     placeHolder.MouseDown += delegate
                     {
@@ -51,7 +51,7 @@ namespace TaskListCommander.AttachedProperties
             }
         }
 
-        private static FrameworkElement CreatePlaceHolderUIElement(TextBox textBox, string placeHolderText)
+        private static FrameworkElement CreatePlaceHolderUiElement(TextBox textBox, string placeHolderText)
         {
             return new TextBlock()
             {

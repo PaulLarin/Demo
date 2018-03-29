@@ -40,7 +40,7 @@ namespace TaskListCommander.ViewModel
             }
         }
 
-        Random _random = new Random();
+        readonly Random _random = new Random();
 
         public ICommand AddNewTaskCommand => new RelayCommand(() =>
         {

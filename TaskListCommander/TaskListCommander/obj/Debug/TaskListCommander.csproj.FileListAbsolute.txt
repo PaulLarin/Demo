@@ -90,3 +90,4 @@ D:\Demo\TaskListCommander\TaskListCommander\obj\Debug\TaskListCommander.csproj.C
 D:\Demo\TaskListCommander\TaskListCommander\obj\Debug\TaskListCommander.exe
 D:\Demo\TaskListCommander\TaskListCommander\obj\Debug\TaskListCommander.pdb
 D:\Repos\Demo\TaskListCommander\TaskListCommander\obj\Debug\TaskListCommander.csprojResolveAssemblyReference.cache
+D:\Demo\TaskListCommander\TaskListCommander\obj\Debug\Styles\Brushes.baml

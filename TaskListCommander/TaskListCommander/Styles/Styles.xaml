@@ -2,30 +2,11 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d">
-    
-    <SolidColorBrush x:Key="ActiveElementBackround" Color="#4C9524" />
-    <SolidColorBrush x:Key="Button.Static.Background" Color="#FFDDDDDD" />
-    <SolidColorBrush x:Key="Button.Static.Border" Color="#FF707070" />
-    <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#FFBEE6FD" />
-    <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#FF3C7FB1" />
-    <SolidColorBrush x:Key="Button.Pressed.Background" Color="#FFC4E5F6" />
-    <SolidColorBrush x:Key="Button.Pressed.Border" Color="#FF2C628B" />
-    <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4" />
-    <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFADB2B5" />
-    <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383" />
-    <SolidColorBrush x:Key="ScrollBar.Static.Background" Color="#F0F0F0" />
-    <SolidColorBrush x:Key="ScrollBar.Static.Border" Color="#F0F0F0" />
-    <SolidColorBrush x:Key="ScrollBar.Pressed.Glyph" Color="#FFFFFF" />
-    <SolidColorBrush x:Key="ScrollBar.MouseOver.Glyph" Color="#000000" />
-    <SolidColorBrush x:Key="ScrollBar.Disabled.Glyph" Color="#BFBFBF" />
-    <SolidColorBrush x:Key="ScrollBar.Static.Glyph" Color="#606060" />
-    <SolidColorBrush x:Key="ScrollBar.MouseOver.Background" Color="#DADADA" />
-    <SolidColorBrush x:Key="ScrollBar.MouseOver.Border" Color="#DADADA" />
-    <SolidColorBrush x:Key="ScrollBar.Pressed.Background" Color="#606060" />
-    <SolidColorBrush x:Key="ScrollBar.Pressed.Border" Color="#606060" />
-    <SolidColorBrush x:Key="ScrollBar.Disabled.Background" Color="#F0F0F0" />
-    <SolidColorBrush x:Key="ScrollBar.Disabled.Border" Color="#F0F0F0" />
-    
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Brushes.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+
     <Style x:Key="InputBoxStyle" TargetType="{x:Type TextBox}">
         <Setter Property="Height" Value="54" />
         <Setter Property="FontSize" Value="15" />
@@ -48,26 +29,30 @@
         <Setter Property="FontStretch" Value="Expanded" />
         <Setter Property="FontFamily" Value="Verdana" />
     </Style>
-    
+
     <Style x:Key="ParameterLabelStyle" TargetType="{x:Type Label}">
         <Setter Property="FontSize" Value="17" />
         <Setter Property="FontWeight" Value="Medium" />
         <Setter Property="FontStretch" Value="Expanded" />
         <Setter Property="FontFamily" Value="Verdana" />
     </Style>
-    <Style x:Key="FocusVisual">
-        <Setter Property="Control.Template">
+
+    <Style x:Key="ButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="FocusVisualStyle">
             <Setter.Value>
-                <ControlTemplate>
-                    <Rectangle Margin="2" SnapsToDevicePixels="true"
-                               Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
-                               StrokeThickness="1" StrokeDashArray="1 2" />
-                </ControlTemplate>
+                <Style>
+                    <Setter Property="Control.Template">
+                        <Setter.Value>
+                            <ControlTemplate>
+                                <Rectangle Margin="2" SnapsToDevicePixels="true"
+                                           Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
+                                           StrokeThickness="1" StrokeDashArray="1 2" />
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
             </Setter.Value>
         </Setter>
-    </Style>
-    <Style x:Key="ButtonStyle" TargetType="{x:Type Button}">
-        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}" />
         <Setter Property="Height" Value="53" />
         <Setter Property="Foreground" Value="#B2FFFFFF" />
         <Setter Property="FontFamily" Value="Verdana" />
@@ -79,7 +64,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
-                    <Border x:Name="border" Background="{StaticResource ActiveElementBackround}"
+                    <Border x:Name="border" Background="{DynamicResource ButtonBackround}"
                             SnapsToDevicePixels="true" CornerRadius="3">
                         <ContentPresenter x:Name="contentPresenter" Focusable="False"
                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -117,11 +102,11 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
     <ControlTemplate x:Key="ScrollViewerControlTemplate" TargetType="{x:Type ScrollViewer}">
         <ControlTemplate.Resources>
 
             <Style x:Key="ScrollBarButton" TargetType="{x:Type RepeatButton}">
-                <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}" />
                 <Setter Property="BorderThickness" Value="1" />
                 <Setter Property="HorizontalContentAlignment" Value="Center" />
                 <Setter Property="VerticalContentAlignment" Value="Center" />
@@ -227,6 +212,7 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+            
             <Style x:Key="ScrollBarStyle" TargetType="{x:Type ScrollBar}">
                 <Setter Property="MinWidth" Value="10" />
                 <Setter Property="Template">
