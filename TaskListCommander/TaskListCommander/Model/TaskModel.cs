@@ -16,9 +16,15 @@ namespace TaskListCommander.Model
         {
             OnReport(new ProgressInfo(TaskState.Runnning, 0));
 
-            // Work imitaion:
+            WorkImitaion();
+
+            OnReport(new ProgressInfo(TaskState.Completed, 100));
+        }
+
+        private void WorkImitaion()
+        {
             var stepsCount = 100;
-            var timeStep = _duration.TotalMilliseconds/ stepsCount;
+            var timeStep = _duration.TotalMilliseconds / stepsCount;
             var step = 100f / stepsCount;
             var progress = 0f;
             while (progress < 100)
@@ -27,8 +33,6 @@ namespace TaskListCommander.Model
                 progress += step;
                 OnReport(new ProgressInfo(TaskState.Runnning, (int)progress));
             }
-
-            OnReport(new ProgressInfo(TaskState.Completed, 100));
         }
     }
 }

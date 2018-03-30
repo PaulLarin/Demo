@@ -61,7 +61,7 @@ namespace TaskListCommander.ViewModel
 
         public ICommand GenerateRandomTaskDurationCommand => new RelayCommand(() =>
         {
-            NewTaskDuration = _random.Next(30).ToString();
+            NewTaskDuration = _random.Next(1, 30).ToString();
         });
 
         public string this[string propertyName]

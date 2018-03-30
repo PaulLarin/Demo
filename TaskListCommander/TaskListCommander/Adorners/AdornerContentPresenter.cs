@@ -13,49 +13,47 @@ namespace TaskListCommander.Adorners
 
     public class AdornerContentPresenter : Adorner
     {
-        private VisualCollection _Visuals;
-        private ContentPresenter _ContentPresenter;
-        private readonly FrameworkElement adornedElement;
+        private readonly VisualCollection _visuals;
+        private readonly ContentPresenter _contentPresenter;
+        private readonly FrameworkElement _adornedElement;
 
         public AdornerContentPresenter(FrameworkElement adornedElement)
           : base(adornedElement)
         {
-            _Visuals = new VisualCollection(this);
-            _ContentPresenter = new ContentPresenter();
-            _Visuals.Add(_ContentPresenter);
+            _visuals = new VisualCollection(this);
+            _contentPresenter = new ContentPresenter();
+            _visuals.Add(_contentPresenter);
         }
 
         public AdornerContentPresenter(FrameworkElement adornedElement, FrameworkElement content)
           : this(adornedElement)
         {
-            this.adornedElement = adornedElement;
+            _adornedElement = adornedElement;
             Content = content;
             Content.DataContext = adornedElement.DataContext;
         }
 
         protected override Size MeasureOverride(Size constraint)
         {
-            _ContentPresenter.Measure(constraint);
-            return _ContentPresenter.DesiredSize;
+            _contentPresenter.Measure(constraint);
+            return _contentPresenter.DesiredSize;
         }
 
         protected override Size ArrangeOverride(Size finalSize)
         {
-            _ContentPresenter.Arrange(new Rect(0, 0,
-                 adornedElement.ActualWidth, adornedElement.ActualHeight));
-            return _ContentPresenter.RenderSize;
+            _contentPresenter.Arrange(new Rect(0, 0,
+                 _adornedElement.ActualWidth, _adornedElement.ActualHeight));
+            return _contentPresenter.RenderSize;
         }
 
-        protected override Visual GetVisualChild(int index)
-        { return _Visuals[index]; }
+        protected override Visual GetVisualChild(int index) => _visuals[index];
 
-        protected override int VisualChildrenCount
-        { get { return _Visuals.Count; } }
+        protected override int VisualChildrenCount => _visuals.Count;
 
         public FrameworkElement Content
         {
-            get { return (FrameworkElement)_ContentPresenter.Content; }
-            set { _ContentPresenter.Content = value; }
+            get => (FrameworkElement)_contentPresenter.Content;
+            set => _contentPresenter.Content = value;
         }
     }
 }
