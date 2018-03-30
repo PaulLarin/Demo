@@ -74,6 +74,9 @@
     <Compile Include="AttachedProperties\TextBoxExtended.cs" />
     <Compile Include="Converters\TaskItemToStateDescriptionConverter.cs" />
     <Compile Include="Converters\TaskNameAndStateToDescriptionConverter.cs" />
+    <Compile Include="Model\ProgressInfo.cs" />
+    <Compile Include="Model\TaskModel.cs" />
+    <Compile Include="Model\TaskState_.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\TaskItemViewModel.cs" />
     <Compile Include="ViewModel\TasksCommanderViewModel.cs" />

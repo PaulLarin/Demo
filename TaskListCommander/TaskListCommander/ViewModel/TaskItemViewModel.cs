@@ -1,43 +1,40 @@
-﻿using System;
-using GalaSoft.MvvmLight;
-using System.Threading;
+﻿using GalaSoft.MvvmLight;
+using System;
 using System.Threading.Tasks;
+using TaskListCommander.Model;
 
 namespace TaskListCommander.ViewModel
 {
-    public enum State
-    {
-        Runnning,
-        Completed
-    }
-
     public class TaskItemViewModel : ViewModelBase
     {
-        private readonly int _durationMilliseconds;
+        private readonly TimeSpan _duration;
+        private readonly TaskModel _model;
         private int _progress;
-        private State _state;
+        private TaskState _state;
         private bool _canBeRemoved;
 
-        public TaskItemViewModel(string name, int duration)
+        public TaskItemViewModel(string name, TimeSpan duration)
         {
             Name = name;
-            _durationMilliseconds = duration * 1000;
+            _duration = duration;
+            _model = new TaskModel(duration);
+            _model.ProgressChanged += _model_ProgressChanged;
             Start();
+        }
+
+        private void _model_ProgressChanged(object sender, ProgressInfo e)
+        {
+            State = e.State;
+            Progress = e.Percents;
         }
 
         void Start()
         {
-            var progressReporter = new Progress(amount => Progress = amount);
-
-            State = State.Runnning;
-            Progress = 0;
-
             Task.Run(() =>
             {
-                WorkImitaion.Run(_durationMilliseconds, progressReporter);
+                _model.Run();
 
                 CanBeRemoved = true;
-                State = State.Completed;
             });
         }
 
@@ -49,7 +46,7 @@ namespace TaskListCommander.ViewModel
             set => Set(nameof(Progress), ref _progress, value);
         }
 
-        public State State
+        public TaskState State
         {
             get => _state;
             set => Set(nameof(State), ref _state, value);
@@ -60,37 +57,5 @@ namespace TaskListCommander.ViewModel
             get => _canBeRemoved;
             set => Set(nameof(CanBeRemoved), ref _canBeRemoved, value);
         }
-    }
-
-    public class Progress : IProgress<int>
-    {
-        private readonly Action<int> _callback;
-
-        public Progress(Action<int> callback)
-        {
-            _callback = callback;
-        }
-
-        public void Report(int value)
-        {
-            _callback.Invoke(value);
-        }
-    }
-
-    static class WorkImitaion
-    {
-        public static void Run(int durationMilliseconds, IProgress<int> progressReporter)
-        {
-            var stepsCount = 100;
-            var timeStep = durationMilliseconds / stepsCount;
-            var step = 100f / stepsCount;
-            var progress = 0f;
-            while (progress < 100)
-            {
-                Thread.Sleep(timeStep);
-                progress += step;
-                progressReporter.Report((int)progress);
-            }
-        }
-    }
+    }   
 }

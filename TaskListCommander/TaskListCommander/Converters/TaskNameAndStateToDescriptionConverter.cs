@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 using TaskListCommander.ViewModel;
+using TaskListCommander.Model;
 
 namespace TaskListCommander.Converters
 {
@@ -11,9 +12,9 @@ namespace TaskListCommander.Converters
         {
             switch (values[1])
             {
-                case State.Completed:
+                case TaskState.Completed:
                     return $"Задача {values[0]} - Выполнена";
-                case State.Runnning:
+                case TaskState.Runnning:
                 default:
                     return $"Задача {values[0]}";
             }

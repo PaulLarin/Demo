@@ -44,7 +44,9 @@ namespace TaskListCommander.ViewModel
 
         public ICommand AddNewTaskCommand => new RelayCommand(() =>
         {
-            Tasks.Add(new TaskItemViewModel(NewTaskName, int.Parse(NewTaskDuration)));
+            var duration = TimeSpan.FromSeconds(int.Parse(NewTaskDuration));
+
+            Tasks.Add(new TaskItemViewModel(NewTaskName, duration));
         });
 
         public ICommand RemoveTaskCommand => new RelayCommand<TaskItemViewModel>(x =>
@@ -54,12 +56,12 @@ namespace TaskListCommander.ViewModel
 
         public ICommand GenerateRandomTaskNameCommand => new RelayCommand(() =>
         {
-            NewTaskName = _random.Next(100).ToString();
+            NewTaskName = _random.Next(1000, 9999).ToString();
         });
 
         public ICommand GenerateRandomTaskDurationCommand => new RelayCommand(() =>
         {
-            NewTaskDuration = _random.Next(100).ToString();
+            NewTaskDuration = _random.Next(30).ToString();
         });
 
         public string this[string propertyName]

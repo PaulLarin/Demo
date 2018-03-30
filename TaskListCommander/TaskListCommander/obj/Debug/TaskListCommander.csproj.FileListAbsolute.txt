@@ -89,5 +89,5 @@ D:\Demo\TaskListCommander\TaskListCommander\obj\Debug\TaskListCommander.csproj.G
 D:\Demo\TaskListCommander\TaskListCommander\obj\Debug\TaskListCommander.csproj.CoreCompileInputs.cache
 D:\Demo\TaskListCommander\TaskListCommander\obj\Debug\TaskListCommander.exe
 D:\Demo\TaskListCommander\TaskListCommander\obj\Debug\TaskListCommander.pdb
-D:\Repos\Demo\TaskListCommander\TaskListCommander\obj\Debug\TaskListCommander.csprojResolveAssemblyReference.cache
 D:\Demo\TaskListCommander\TaskListCommander\obj\Debug\Styles\Brushes.baml
+D:\Repos\Demo\TaskListCommander\TaskListCommander\obj\Debug\Styles\Brushes.baml

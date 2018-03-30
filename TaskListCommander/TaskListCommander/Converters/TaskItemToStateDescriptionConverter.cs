@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using TaskListCommander.Model;
 using TaskListCommander.ViewModel;
 
 namespace TaskListCommander.Converters
@@ -18,9 +19,9 @@ namespace TaskListCommander.Converters
 
             switch (task.State)
             {
-                case State.Runnning:
+                case TaskState.Runnning:
                     break;
-                case State.Completed:
+                case TaskState.Completed:
                     state = " - Выполнена";
                     break;
             }

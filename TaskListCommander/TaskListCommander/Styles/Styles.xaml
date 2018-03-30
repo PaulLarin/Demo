@@ -15,7 +15,8 @@
                 <ControlTemplate>
                     <Border Background="White" CornerRadius="3">
                         <Grid>
-                            <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="IBeam"/>
+                            <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" 
+                                          HorizontalAlignment="Center" Cursor="IBeam"/>
                         </Grid>
                     </Border>
                 </ControlTemplate>
