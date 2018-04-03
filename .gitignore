@@ -5,3 +5,4 @@
 /TaskListCommander/.vs/TaskListCommander/v15
 *bin*
 *obj* 
+/LargeFileSorting/.vs/LargeFileSorting/v15/Server/sqlite3
