@@ -17,28 +17,31 @@ namespace LargeFileSorting
 
         static void Main(string[] args)
         {
-            var N = 10000000;
             var workingDir = "D:\\Test\\";
-            Directory.CreateDirectory(workingDir);
 
-            var sw = Stopwatch.StartNew();
+            Directory.CreateDirectory(workingDir);
 
             var inputFile = workingDir + "unsorted.txt";
             var outfile = workingDir + "sorted.txt";
-            UnsortedFileGenerator.Generate(inputFile, 10000l*1024*1024);
 
-            Console.WriteLine(sw.Elapsed);
-            sw.Restart();
-            //Algorithm1.Sort(workingDir, f, workingDir + "sorted.txt");
+            var fileSize = 500L * 1024 * 1024;
+
+            var file = new FileInfo(inputFile);
+
+            if (!file.Exists || file.Length != fileSize)
+                UnsortedFileGenerator.Generate(inputFile, fileSize);
+
+            var sw = Stopwatch.StartNew();
+
             var sorter = new LargeFileSorter(inputFile, outfile);
-            sorter.Sort();
-            Console.WriteLine("alg1: " + sw.Elapsed);
-            Verificate(inputFile, outfile);
-            //sw.Restart();
-            //Algorithm2.Sort(workingDir, f, workingDir + "sorted.txt");
-            //Console.WriteLine("alg2: " + sw.Elapsed);
+            sorter.Sort2();
 
             sw.Stop();
+
+            Console.WriteLine(sw.Elapsed);
+
+            Verificate(inputFile, outfile);
+
             Console.Read();
         }
 
@@ -53,15 +56,33 @@ namespace LargeFileSorting
             Contract.Assert(strs1.Count() == strs2.Count());
 
             //for (int i = 0; i < strs1.Count(); i++)
-            //{
             //    Console.WriteLine($"{strs1[i]}\t\t{strs2[i]}");
-            //}
 
             var h1 = new HashSet<string>(strs1);
             var h2 = new HashSet<string>(strs2);
 
-            var diff = h1.Except(h2);
-            Contract.Assert(diff.Count() == 0);
+            var counts1 = new Dictionary<string, int>();
+            var counts2 = new Dictionary<string, int>();
+            foreach (var s in strs1)
+            {
+                if (!counts1.ContainsKey(s))
+                    counts1.Add(s, strs1.Count(x => x == s));
+            }
+
+            foreach (var s in strs2)
+            {
+                if (!counts2.ContainsKey(s))
+                    counts2.Add(s, strs2.Count(x => x == s));
+            }
+
+            Contract.Assert(counts1.Count() == counts2.Count());
+
+
+            foreach (var entry in counts1)
+                Contract.Assert(counts2.ContainsKey(entry.Key) && counts2[entry.Key] == entry.Value);
+
+            var emptyCount = strs1.Count(x => x == "");
+            var emptyCount2 = strs2.Count(x => x == "");
 
             for (int i = 1; i < strs2.Count(); i++)
                 Contract.Assert(new Entry(strs2[i]).CompareTo(new Entry(strs2[i - 1])) >= 0);

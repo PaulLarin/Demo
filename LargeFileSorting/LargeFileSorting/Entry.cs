@@ -3,8 +3,6 @@ using System.Linq;
 
 namespace LargeFileSorting
 {
-    partial class Program
-    {
         class Entry : IComparable<Entry>
         {
             public Entry(string stringValue)
@@ -58,4 +56,3 @@ namespace LargeFileSorting
         }
 
     }
-}

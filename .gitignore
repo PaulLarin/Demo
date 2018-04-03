@@ -6,3 +6,5 @@
 *bin*
 *obj* 
 /LargeFileSorting/.vs/LargeFileSorting/v15/Server/sqlite3
+/LargeFileSorting/packages
+/LargeFileSorting/.vs/LargeFileSorting/v15/sqlite3
