@@ -8,8 +8,8 @@ namespace LargeFileSorting
             public Entry(string stringValue)
             {
                 var splitterIndex = stringValue.IndexOf(Splitter);
-                if (splitterIndex == -1)
-                    throw new ArgumentException($"wrong {nameof(stringValue)} format, {nameof(stringValue)} = {stringValue}");
+                //if (splitterIndex == -1)
+                //    throw new ArgumentException($"wrong {nameof(stringValue)} format, {nameof(stringValue)} = {stringValue}");
 
                 var numberPart = stringValue.Substring(0, splitterIndex);
                 var stringPart = stringValue.Substring(splitterIndex + Splitter.Length);

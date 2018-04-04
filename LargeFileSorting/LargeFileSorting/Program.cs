@@ -12,9 +12,6 @@ namespace LargeFileSorting
 {
     partial class Program
     {
-        //public static int N = 200000; // size of the file in disk
-        //public static int M = 20000; // max items the memory buffer can hold
-
         static void Main(string[] args)
         {
             var workingDir = "D:\\Test\\";
@@ -24,17 +21,17 @@ namespace LargeFileSorting
             var inputFile = workingDir + "unsorted.txt";
             var outfile = workingDir + "sorted.txt";
 
-            var fileSize = 500L * 1024 * 1024;
+            var fileSize = 10L * 1024 * 1024;
 
             var file = new FileInfo(inputFile);
 
-            if (!file.Exists || file.Length != fileSize)
+            if (!file.Exists || Math.Abs(file.Length - fileSize) > 10000 * 1024)
                 UnsortedFileGenerator.Generate(inputFile, fileSize);
 
             var sw = Stopwatch.StartNew();
 
-            var sorter = new LargeFileSorter(inputFile, outfile);
-            sorter.Sort2();
+            var sorter = new FileSorter(inputFile, outfile);
+            sorter.Sort();
 
             sw.Stop();
 
@@ -48,46 +45,32 @@ namespace LargeFileSorting
 
         private static void Verificate(string fileName, string outFile)
         {
-            //return;
+            Console.WriteLine("checking..");
 
-            var strs1 = File.ReadLines(fileName).ToArray();
-            var strs2 = File.ReadLines(outFile).ToArray();
+            var fileSize = new FileInfo(fileName).Length;
+
+            Contract.Assert(fileSize < 1000.FromMb(), $"File is large! {fileSize.ToMb()} Mb, do you realy wanna check it?");
+
+            var strs1 = File.ReadLines(fileName).ToList();
+            var strs2 = File.ReadLines(outFile).ToList();
 
             Contract.Assert(strs1.Count() == strs2.Count());
 
-            //for (int i = 0; i < strs1.Count(); i++)
-            //    Console.WriteLine($"{strs1[i]}\t\t{strs2[i]}");
 
             var h1 = new HashSet<string>(strs1);
             var h2 = new HashSet<string>(strs2);
+            Contract.Assert(h1.Count() == h2.Count());
 
-            var counts1 = new Dictionary<string, int>();
-            var counts2 = new Dictionary<string, int>();
-            foreach (var s in strs1)
-            {
-                if (!counts1.ContainsKey(s))
-                    counts1.Add(s, strs1.Count(x => x == s));
-            }
+            var diffs = h1.Except(h2);
+            var diffs2 = h2.Except(h1);
 
-            foreach (var s in strs2)
-            {
-                if (!counts2.ContainsKey(s))
-                    counts2.Add(s, strs2.Count(x => x == s));
-            }
-
-            Contract.Assert(counts1.Count() == counts2.Count());
-
-
-            foreach (var entry in counts1)
-                Contract.Assert(counts2.ContainsKey(entry.Key) && counts2[entry.Key] == entry.Value);
-
-            var emptyCount = strs1.Count(x => x == "");
-            var emptyCount2 = strs2.Count(x => x == "");
+            Contract.Assert(diffs.Count() == 0);
+            Contract.Assert(diffs2.Count() == 0);
 
             for (int i = 1; i < strs2.Count(); i++)
                 Contract.Assert(new Entry(strs2[i]).CompareTo(new Entry(strs2[i - 1])) >= 0);
 
-            Console.WriteLine("ok");
+            Console.WriteLine("file is realy sorted!");
         }
     }
 }

@@ -33,19 +33,20 @@ namespace LargeFileSorting
             {
                 var sw = Stopwatch.StartNew();
 
-                using (var fs = File.Create(fileName, 4048, FileOptions.Asynchronous))
+                using (var fs = File.Create(fileName))
                 using (var bs = new BufferedStream(fs))
                 using (var swr = new StreamWriter(bs))
                 {
+                    //fs.SetLength
+
                     var bytesWritten = 0L;
                     do
                     {
                         var entry = GetRandomEntry().ConvertToString();
                         var entrySize = System.Text.Encoding.UTF8.GetByteCount(entry);
-
                         swr.WriteLine(entry);
-
                         bytesWritten += entrySize;
+                    //} while (bs.Length <= size);
                     } while (bytesWritten <= size);
 
                     swr.Flush();

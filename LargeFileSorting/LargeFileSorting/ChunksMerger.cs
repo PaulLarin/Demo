@@ -6,80 +6,49 @@ namespace LargeFileSorting
 {
     static class ChunksMerger
     {
-        public static void MergeIntoSortedFile(SplitResult sortResult, string outFilePath)
+        public static void MergeIntoSortedFile(SplitResult splitResult, string outFilePath)
         {
-            int chunksCount = sortResult.Chunks.Count();
-            var totalEntriesCount = sortResult.TotalEntriesCount;
-            var chunks = sortResult.Chunks.ToArray();
-            var firstEntries = new Entry[chunksCount];
-            var tempFilesReaders = new StreamReader[chunksCount];
-
-            for (int i = 0; i < chunksCount; i++)
+            var chunkReaders = splitResult.Chunks.Select(x =>
             {
-                var fs = new FileStream(chunks[i].Path, FileMode.Open);
-                var bs = new BufferedStream(fs);
+                var sr = File.OpenRead(x.Path);
+                var bs = new BufferedStream(sr, 10 * 1024 * 1024);
+                return new StreamReader(bs);
+            }).ToDictionary(x => x, x => new Entry(x.ReadLine()));
 
-                tempFilesReaders[i] = new StreamReader(bs);
+            var progressStep = splitResult.TotalEntriesCount / 10;
+            var totalEntriesCount = splitResult.TotalEntriesCount;
 
-                var first = tempFilesReaders[i].ReadLine();
-                if (first != null)
-                    firstEntries[i] = new Entry(first);
-            }
+            var min = chunkReaders.FirstOrDefault(y => y.Value == chunkReaders.Min(x => x.Value));
 
-            var progressStep = totalEntriesCount / 10;
-
+            int i = 0;
             using (var sw = File.CreateText(outFilePath))
             {
-                for (int i = 0; i < totalEntriesCount; i++)
+                while (chunkReaders.Any())
                 {
-                    var minEntry = firstEntries[0];
-                    var minEntryChunk = 0;
+                    sw.WriteLine(min.Value.ConvertToString());
 
-                    for (int j = 0; j < chunksCount; j++)
+                    var next = min.Key.ReadLine();
+                    if (next == null)
                     {
-                        var entry = firstEntries[j];
-                        if (entry == null)
-                            continue;
-
-                        if (minEntry == null)
-                        {
-                            minEntry = firstEntries[j];
-                            minEntryChunk = j;
-                        }
-
-                        if ((minEntry.CompareTo(entry) >= 0))
-                        {
-                            minEntry = firstEntries[j];
-                            minEntryChunk = j;
-                        }
+                        chunkReaders.Remove(min.Key);
+                        min = chunkReaders.FirstOrDefault(x => x.Value == chunkReaders.Min(y => y.Value));
+                        continue;
                     }
+                    var entry = new Entry(next);
+                    chunkReaders[min.Key] = entry;
 
-                    if (minEntry != null)
-                        sw.WriteLine(minEntry.ConvertToString());
+                    if (i++ % progressStep == 0)
+                        Console.Write($"{(int)(100 * (((double)i) / totalEntriesCount))}% ");
 
-                    var line = tempFilesReaders[minEntryChunk].ReadLine();
-                    if (line != null)
-                        firstEntries[minEntryChunk] = new Entry(line);
-                    else
-                        firstEntries[minEntryChunk] = null;
-
-                    if (i % progressStep == 0)
-                        Console.Write($"{(int) (100 * (((double) i) / totalEntriesCount))}% ");
+                    if (entry.CompareTo(min.Value) == 1)
+                        min = chunkReaders.FirstOrDefault(x => x.Value == chunkReaders.Min(y => y.Value));
                 }
+
+                Console.Write("100%");
+                Console.WriteLine();
+
+                sw.Close();
             }
-
-            Console.Write($"100% ");
-
-
-            foreach (var sr in tempFilesReaders)
-                sr.Close();
-
-            Console.WriteLine();
-            Console.WriteLine($"Sub blocks merged into {outFilePath}");
-            Console.WriteLine();
         }
-
-
-
     }
 }
