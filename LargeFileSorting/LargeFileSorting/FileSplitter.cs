@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Common;
+using Data;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -28,13 +30,14 @@ namespace LargeFileSorting
 
             var fileSize = new FileInfo(filePath).Length;
             var maxChunkSize = options.MaxChunkSize;
-            var chunksCount = 0;
-            var totalEntriesCount = 0;
-
-            var minEntriesPerChunk = 1000000;
+            
+            var minEntriesPerChunk = 100000;
 
             Console.WriteLine();
             Console.WriteLine($"generating chunks..");
+
+            var chunksCount = 0;
+            var totalEntriesCount = 0;
 
             var chunkInfos = new List<ChunkInfo>();
             var buffer = new List<Entry>((int)minEntriesPerChunk);
@@ -73,11 +76,11 @@ namespace LargeFileSorting
                         tw.Close();
                     }
 
-                    Console.WriteLine($"chunk {chunksCount} generated..");
+                    Console.WriteLine($"chunk {chunksCount} generated, size: {new FileInfo(chunkFile).Length.ToMb()}Mb");
 
                     chunkInfos.Add(new ChunkInfo(chunkFile, i));
-                    totalEntriesCount += i;
 
+                    totalEntriesCount += i;
                     chunksCount++;
                 }
             }
@@ -85,7 +88,6 @@ namespace LargeFileSorting
             Console.WriteLine();
             Console.WriteLine($"chunks count: {chunksCount}");
             Console.WriteLine($"entries count: {totalEntriesCount.ToString("N0")}");
-            Console.WriteLine();
 
             return new SplitResult(chunkInfos, totalEntriesCount);
         }

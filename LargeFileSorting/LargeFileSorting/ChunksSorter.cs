@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Data;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -9,7 +10,7 @@ namespace LargeFileSorting
 {
     static class ChunksSorter
     {
-        public static void Sort(SplitResult splitResult, long maxAllowedMemorySize)
+        public static void SortParallel(SplitResult splitResult, long maxAllowedMemorySize)
         {
             var parallelProcessingList = new List<List<ChunkInfo>>() { new List<ChunkInfo>() };
 
@@ -40,36 +41,42 @@ namespace LargeFileSorting
             var entries = new Entry[chunk.ItemsCount];
 
             using (var fs = new FileStream(chunk.Path, FileMode.Open, FileAccess.Read))
-            using (var bs = new BufferedStream(fs))
-            using (var sr = new StreamReader(bs))
+            using (var sr = new StreamReader(fs))
             {
                 for (int i = 0; i < chunk.ItemsCount; i++)
                 {
                     var line = sr.ReadLine();
-                    entries[i] = new Entry(line);
+                    var entry = new Entry(line);
+
+                    entries[i] = entry;
                 }
 
                 fs.Close();
-                bs.Close();
                 sr.Close();
             }
 
             var sw = Stopwatch.StartNew();
 
-            Array.Sort(entries);
-
-            Console.WriteLine($"chunk sorted, time: {sw.Elapsed}, items count: {chunk.ItemsCount.ToString("N0")}");
+            // т.к. известно, что есть повторяющиеся части String, вместо сортировки entries сделаем упорядоченную группировку по String:
+            var groupedByString = entries.GroupBy(x => x.String).OrderBy(x => x.Key);
 
             using (var tw = File.OpenWrite(chunk.Path))
             using (var swr = new StreamWriter(tw))
             {
-                foreach (var entry in entries)
-                    swr.WriteLine(entry.ConvertToString());
+                foreach (var group in groupedByString)
+                {
+                    // далее каждую группу отсортируем по Number и запишем в чанк:
+                    var ordered = group.OrderBy(x => x.Number);
+                    foreach (var entry in ordered)
+                        swr.WriteLine(entry.ConvertToString());
+                }
 
                 swr.Flush();
                 swr.Close();
                 tw.Close();
             }
+
+            Console.WriteLine($"chunk sorted, time: {sw.Elapsed}, items count: {chunk.ItemsCount.ToString("N0")}");
         }
     }
 
