@@ -18,7 +18,7 @@ namespace LargeFileSorting
 
             foreach (var chunk in splitResult.Chunks)
             {
-                commonParallelProcessingSize += new FileInfo(chunk.Path).Length;
+                commonParallelProcessingSize += new FileInfo(chunk.Path).Length * 2;
                 if (commonParallelProcessingSize < maxAllowedMemorySize)
                     parallelProcessingList.Last().Add(chunk);
                 else
