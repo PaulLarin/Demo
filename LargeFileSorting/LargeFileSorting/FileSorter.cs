@@ -16,7 +16,7 @@ namespace LargeFileSorting
 
                 var sw = Stopwatch.StartNew();
 
-                var maxAllowedRamSize = 4000L * 1024 * 1024;
+                var maxAllowedRamSize = 2000L * 1024 * 1024;
 
                 var maxChunkSize = (fileSize > maxAllowedRamSize ? maxAllowedRamSize : fileSize) / 4;
 
