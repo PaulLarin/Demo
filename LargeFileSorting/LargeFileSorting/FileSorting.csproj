@@ -57,6 +57,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="SplitOptions.cs" />
     <Compile Include="SplitResult.cs" />
   </ItemGroup>
   <ItemGroup>

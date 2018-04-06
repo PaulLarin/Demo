@@ -24,7 +24,7 @@ namespace TestApp
             var inputFile = workingDir + "unsorted.txt";
             var outfile = workingDir + "sorted.txt";
 
-            var fileSize = 5000.FromMb();
+            var fileSize = 1000.FromMb();
 
             var file = new FileInfo(inputFile);
 

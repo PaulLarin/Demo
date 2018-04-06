@@ -2,20 +2,12 @@
 using Data;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
 namespace LargeFileSorting
 {
-    public class SplitOptions
-    {
-        public SplitOptions(long maxChunkSize)
-        {
-            MaxChunkSize = maxChunkSize;
-        }
-
-        public long MaxChunkSize { get; }
-    }
 
     public static class FileSplitter
     {
@@ -24,13 +16,12 @@ namespace LargeFileSorting
             return $"TEMP_{Path.GetFileNameWithoutExtension(inputFile)}" + "\\temp" + number.ToString() + ".txt";
         }
 
-        public static SplitResult SplitIntoChunks(string filePath, SplitOptions options)
+        public static SplitResult SplitIntoChunks(string filePath, SplitOptions options, Action<ChunkInfo> chunkGeneratedCallback)
         {
             CreateTempDir(filePath);
-
             var fileSize = new FileInfo(filePath).Length;
             var maxChunkSize = options.MaxChunkSize;
-            
+
             var minEntriesPerChunk = 100000;
 
             Console.WriteLine();
@@ -49,10 +40,14 @@ namespace LargeFileSorting
                 string line = string.Empty;
                 while (line != null)
                 {
+                    var swt = Stopwatch.StartNew();
+
                     int i = 0;
 
                     var chunkFile = GetChunkFilePath(filePath, chunksCount);
+
                     using (var tw = File.OpenWrite(chunkFile))
+                    using (var bw = new BufferedStream(tw))
                     using (var sw = new StreamWriter(tw))
                     {
                         var bytesWritten = 0;
@@ -72,22 +67,20 @@ namespace LargeFileSorting
                         }
 
                         sw.Flush();
-                        sw.Close();
-                        tw.Close();
                     }
 
-                    Console.WriteLine($"chunk {chunksCount} generated, size: {new FileInfo(chunkFile).Length.ToMb()}Mb");
+                    Console.WriteLine($"chunk {chunksCount} generated, size: {new FileInfo(chunkFile).Length.ToMb()}Mb, time: {swt.Elapsed}");
 
-                    chunkInfos.Add(new ChunkInfo(chunkFile, i));
+                    var chunk = new ChunkInfo(chunkFile, i);
+
+                    chunkInfos.Add(chunk);
+
+                    chunkGeneratedCallback?.Invoke(chunk);
 
                     totalEntriesCount += i;
                     chunksCount++;
                 }
             }
-
-            Console.WriteLine();
-            Console.WriteLine($"chunks count: {chunksCount}");
-            Console.WriteLine($"entries count: {totalEntriesCount.ToString("N0")}");
 
             return new SplitResult(chunkInfos, totalEntriesCount);
         }

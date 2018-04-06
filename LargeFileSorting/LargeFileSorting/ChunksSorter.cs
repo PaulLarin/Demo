@@ -36,9 +36,10 @@ namespace LargeFileSorting
             }
         }
 
-        static void SortChunk(ChunkInfo chunk)
+        public static void SortChunk(ChunkInfo chunk)
         {
             var entries = new Entry[chunk.ItemsCount];
+            var sw0 = Stopwatch.StartNew();
 
             using (var fs = new FileStream(chunk.Path, FileMode.Open, FileAccess.Read))
             using (var sr = new StreamReader(fs))
@@ -55,12 +56,14 @@ namespace LargeFileSorting
                 sr.Close();
             }
 
+            sw0.Stop();
             var sw = Stopwatch.StartNew();
 
             // т.к. известно, что есть повторяющиеся части String, вместо сортировки entries сделаем упорядоченную группировку по String:
             var groupedByString = entries.GroupBy(x => x.String).OrderBy(x => x.Key);
 
             using (var tw = File.OpenWrite(chunk.Path))
+            using (var bw = new BufferedStream(tw))
             using (var swr = new StreamWriter(tw))
             {
                 foreach (var group in groupedByString)
@@ -76,7 +79,7 @@ namespace LargeFileSorting
                 tw.Close();
             }
 
-            Console.WriteLine($"chunk sorted, time: {sw.Elapsed}, items count: {chunk.ItemsCount.ToString("N0")}");
+            Console.WriteLine($"chunk sorted, time: {sw.Elapsed}, items count: {chunk.ItemsCount.ToString("N0")}, {Path.GetFileName(chunk.Path)} reading time:{sw0.Elapsed}");
         }
     }
 

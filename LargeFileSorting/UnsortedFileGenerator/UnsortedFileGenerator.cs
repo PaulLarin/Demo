@@ -47,7 +47,8 @@ namespace UnsortedFileGenerator
             var progressStep = size / 10;
             var progressPosition = 0L;
             using (var tw = File.Create(fileName))
-            using (var swr = new StreamWriter(tw))
+            using (var bw = new BufferedStream(tw))
+            using (var swr = new StreamWriter(bw))
             {
                 var bytesWritten = 0L;
                 do
